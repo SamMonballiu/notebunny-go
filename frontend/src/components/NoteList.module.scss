@@ -1,0 +1,25 @@
+.container {
+  background: white;
+  border: 1px solid #999;
+  font-size: 0.9em;
+}
+
+.note {
+  margin: 0;
+  padding: 8px 4px;
+  cursor: pointer;
+
+  &:hover {
+    background: #eee;
+  }
+}
+
+.selected {
+  background: #ccc;
+  color: white;
+  font-weight: 700;
+
+  &:hover {
+    background: #ccc;
+  }
+}
