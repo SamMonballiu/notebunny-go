@@ -16,7 +16,7 @@ function App() {
         const note: Note = {
           id: x.Id,
           content: x.Content,
-          createdOn: x.CreatedOn,
+          createdOn: new Date(x.CreatedOn),
           subject: x.Subject,
           tagIds: x.TagIds,
         };
@@ -40,7 +40,15 @@ function App() {
         onSelect={setSelectedIndex}
       />
       <div className={styles.detail}>
-        {selectedIndex !== null && <NoteDetail note={notes[selectedIndex]} />}
+        {selectedIndex !== null && (
+          <>
+            <h1>{notes[selectedIndex].subject}</h1>
+            <h4>{notes[selectedIndex].createdOn?.toLocaleDateString()}</h4>
+            <div className={styles.note}>
+              <NoteDetail note={notes[selectedIndex]} />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
