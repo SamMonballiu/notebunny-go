@@ -42,8 +42,6 @@ function App() {
       <div className={styles.detail}>
         {selectedIndex !== null && (
           <>
-            <h1>{notes[selectedIndex].subject}</h1>
-            <h4>{notes[selectedIndex].createdOn?.toLocaleDateString()}</h4>
             <div className={styles.note}>
               <NoteDetail note={notes[selectedIndex]} />
             </div>

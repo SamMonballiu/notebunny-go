@@ -8,5 +8,11 @@ interface Props {
 }
 
 export const NoteDetail: FC<Props> = ({ note }) => {
-  return <Markdown rehypePlugins={[rehypeHighlight]}>{note.content}</Markdown>;
+  return (
+    <>
+      <h1>{note.subject}</h1>
+      <h4>{note.createdOn?.toLocaleDateString()}</h4>
+      <Markdown rehypePlugins={[rehypeHighlight]}>{note.content}</Markdown>
+    </>
+  );
 };
