@@ -1,0 +1,16 @@
+$padding: 8px;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: $padding;
+  height: calc(100vh - ($padding * 2));
+  gap: 8px;
+}
+
+.content {
+  background: white;
+  border: 1px solid #999;
+  flex-grow: 1;
+  padding: $padding;
+}
