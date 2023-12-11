@@ -5,3 +5,9 @@ export interface Note {
   createdOn: Date;
   tagIds: string[];
 }
+
+export interface Tag {
+  id: string;
+  name: string;
+  createdOn: Date;
+}

@@ -45,3 +45,39 @@ func (repo *NotesRepository) Init(path string) {
 		repo.notes = append(repo.notes, notes...)
 	}
 }
+
+type ITagsRepository interface {
+	Init(path string)
+	GetAll() []Tag
+}
+
+type TagsRepository struct {
+	tags []Tag
+	Path string
+}
+
+func (repo TagsRepository) GetAll() []Tag {
+	return repo.tags
+}
+
+func (repo *TagsRepository) Init(path string) {
+	fmt.Println("INIT")
+	fmt.Println(path)
+	repo.Path = path
+
+	body, err := os.ReadFile(repo.Path)
+
+	if err != nil {
+		//panic("os? noooo")
+	}
+
+	var tags []Tag
+	jsonErr := json.Unmarshal(body, &tags)
+
+	if jsonErr != nil {
+		//panic("json? nooo")
+	} else {
+		fmt.Println("============== READ TAGS ==============")
+		repo.tags = append(repo.tags, tags...)
+	}
+}

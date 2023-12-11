@@ -1,33 +1,57 @@
 import { useQuery } from "react-query";
-import { Test } from "../wailsjs/go/main/App";
+import { GetNotes, GetTags } from "../wailsjs/go/main/App";
 import "./App.css";
 import { NotesList } from "./components/NoteList";
-import { Note } from "./models";
+import { Note, Tag } from "./models";
 import { useState } from "react";
 import styles from "./App.module.scss";
 import { NoteDetail } from "./components/NoteDetail";
 
 function App() {
   const [notes, setNotes] = useState<Note[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(1);
-  const { isFetching } = useQuery(["notes"], async () => await Test(), {
-    onSuccess: (data) => {
-      const mapped = data.map((x) => {
-        const note: Note = {
-          id: x.Id,
-          content: x.Content,
-          createdOn: new Date(x.CreatedOn),
-          subject: x.Subject,
-          tagIds: x.TagIds,
-        };
+  const { isFetching: isFetchingNotes } = useQuery(
+    ["notes"],
+    async () => await GetNotes(),
+    {
+      onSuccess: (data) => {
+        const mapped = data.map((x) => {
+          const note: Note = {
+            id: x.Id,
+            content: x.Content,
+            createdOn: new Date(x.CreatedOn),
+            subject: x.Subject,
+            tagIds: x.TagIds,
+          };
 
-        return note;
-      });
-      setNotes(mapped);
-    },
-  });
+          return note;
+        });
+        setNotes(mapped);
+      },
+    }
+  );
 
-  if (isFetching) {
+  const { isFetching: isFetchingTags } = useQuery(
+    ["tags"],
+    async () => await GetTags(),
+    {
+      onSuccess: (data) => {
+        const mapped = data.map((x) => {
+          const tag: Tag = {
+            id: x.Id,
+            name: x.Name,
+            createdOn: new Date(x.CreatedOn),
+          };
+
+          return tag;
+        });
+        setTags(mapped);
+      },
+    }
+  );
+
+  if (isFetchingNotes) {
     return <h1>Loading</h1>;
   }
 
@@ -43,7 +67,12 @@ function App() {
         {selectedIndex !== null && (
           <>
             <div className={styles.note}>
-              <NoteDetail note={notes[selectedIndex]} />
+              <NoteDetail
+                note={notes[selectedIndex]}
+                tags={tags.filter((t) =>
+                  notes[selectedIndex].tagIds.includes(t.id)
+                )}
+              />
             </div>
           </>
         )}
