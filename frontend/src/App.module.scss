@@ -1,5 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@300&family=Raleway:wght@300&family=Rethink+Sans:wght@400;700&display=swap");
 
+$pad: 8px;
+
 .container {
   display: flex;
   height: 100vh;
@@ -8,10 +10,13 @@
 }
 
 .pane {
+  padding-top: $pad;
+  padding-bottom: $pad;
+  padding-left: $pad;
+  height: calc(100vh - $pad * 2);
   width: 33vw;
   display: flex;
   flex-direction: column;
-  height: 100vh;
   gap: 12px;
 }
 
