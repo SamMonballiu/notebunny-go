@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@400;700&family=Roboto:wght@500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@300&family=Raleway:wght@300&family=Rethink+Sans:wght@400;700&display=swap");
 
 .container {
   display: flex;
@@ -7,9 +7,21 @@
   align-items: flex-start;
 }
 
-.list {
+.pane {
   width: 33vw;
-  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  gap: 12px;
+}
+
+.sortOptions {
+}
+
+.list {
+  //   width: 33vw;
+  //   max-height: 50vh;
+  flex-grow: 1;
   overflow: scroll;
   font-family: "Rethink Sans";
 }
@@ -33,10 +45,64 @@
 }
 
 body {
+  font-family: "Rethink Sans";
   padding: 0;
   margin: 0;
-  background: #ddd;
+  background: #eee;
+  background: rgba(240, 240, 240, 1);
+  background: -moz-radial-gradient(
+    center,
+    ellipse cover,
+    rgba(240, 240, 240, 1) 0%,
+    rgba(230, 230, 230, 1) 47%,
+    rgba(222, 222, 222, 1) 100%
+  );
+  background: -webkit-gradient(
+    radial,
+    center center,
+    0px,
+    center center,
+    100%,
+    color-stop(0%, rgba(240, 240, 240, 1)),
+    color-stop(47%, rgba(230, 230, 230, 1)),
+    color-stop(100%, rgba(222, 222, 222, 1))
+  );
+  background: -webkit-radial-gradient(
+    center,
+    ellipse cover,
+    rgba(240, 240, 240, 1) 0%,
+    rgba(230, 230, 230, 1) 47%,
+    rgba(222, 222, 222, 1) 100%
+  );
+  background: -o-radial-gradient(
+    center,
+    ellipse cover,
+    rgba(240, 240, 240, 1) 0%,
+    rgba(230, 230, 230, 1) 47%,
+    rgba(222, 222, 222, 1) 100%
+  );
+  background: -ms-radial-gradient(
+    center,
+    ellipse cover,
+    rgba(240, 240, 240, 1) 0%,
+    rgba(230, 230, 230, 1) 47%,
+    rgba(222, 222, 222, 1) 100%
+  );
+  background: radial-gradient(
+    ellipse at center,
+    rgba(240, 240, 240, 1) 0%,
+    rgba(230, 230, 230, 1) 47%,
+    rgba(222, 222, 222, 1) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0f0f0', endColorstr='#dedede', GradientType=1 );
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+
+  code {
+    font-family: "Fira Code";
+    font-size: 0.8em;
+  }
 }

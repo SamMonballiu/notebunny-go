@@ -11,3 +11,5 @@ export interface Tag {
   name: string;
   createdOn: Date;
 }
+
+export type NoteSortOption = "name" | "creationDate";

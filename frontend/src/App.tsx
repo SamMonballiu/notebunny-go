@@ -2,15 +2,31 @@ import { useQuery } from "react-query";
 import { GetNotes, GetTags } from "../wailsjs/go/main/App";
 import "./App.css";
 import { NotesList } from "./components/NoteList";
-import { Note, Tag } from "./models";
-import { useState } from "react";
+import { Note, NoteSortOption, Tag } from "./models";
+import { useState, useMemo } from "react";
 import styles from "./App.module.scss";
 import { NoteDetail } from "./components/NoteDetail";
+import { NoteSortingDropdown } from "./components/NoteSortingDropdown";
 
 function App() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(1);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [sortOption, setSortOption] = useState<NoteSortOption>("creationDate");
+
+  const sorted = useMemo(() => {
+    switch (sortOption) {
+      case "name":
+        return notes.sort((a, b) => (a.subject < b.subject ? -1 : 1));
+      case "creationDate":
+        return notes
+          .sort((a, b) => (a.createdOn < b.createdOn ? -1 : 1))
+          .reverse();
+      default:
+        return notes;
+    }
+  }, [notes, sortOption]);
+
   const { isFetching: isFetchingNotes } = useQuery(
     ["notes"],
     async () => await GetNotes(),
@@ -51,26 +67,34 @@ function App() {
     }
   );
 
-  if (isFetchingNotes) {
+  if (isFetchingNotes || isFetchingTags) {
     return <h1>Loading</h1>;
   }
 
   return (
     <div className={styles.container}>
-      <NotesList
-        notes={notes}
-        className={styles.list}
-        selectedIndex={selectedIndex}
-        onSelect={setSelectedIndex}
-      />
+      <section className={styles.pane}>
+        <NotesList
+          notes={sorted}
+          className={styles.list}
+          selectedIndex={selectedIndex}
+          onSelect={setSelectedIndex}
+        />
+        <div className={styles.sortOptions}>
+          <NoteSortingDropdown
+            selectedSortOption={sortOption}
+            onSelect={(opt) => setSortOption(opt)}
+          />
+        </div>
+      </section>
       <div className={styles.detail}>
         {selectedIndex !== null && (
           <>
             <div className={styles.note}>
               <NoteDetail
-                note={notes[selectedIndex]}
+                note={sorted[selectedIndex]}
                 tags={tags.filter((t) =>
-                  notes[selectedIndex].tagIds.includes(t.id)
+                  sorted[selectedIndex].tagIds.includes(t.id)
                 )}
               />
             </div>
