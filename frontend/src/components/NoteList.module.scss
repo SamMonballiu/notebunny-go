@@ -1,3 +1,5 @@
+$selected: rgb(132, 168, 236);
+
 .container {
   background: white;
   border: 1px solid #999;
@@ -6,7 +8,7 @@
 
 .note {
   margin: 0;
-  padding: 8px 4px;
+  padding: 4px 2px;
   cursor: pointer;
 
   &:hover {
@@ -15,11 +17,11 @@
 }
 
 .selected {
-  background: #ccc;
+  background: $selected;
   color: white;
   font-weight: 700;
 
   &:hover {
-    background: #ccc;
+    background: $selected;
   }
 }
