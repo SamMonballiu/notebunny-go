@@ -2,6 +2,7 @@ import { Note, Tag as TagModel } from "../models";
 import { FC } from "react";
 import Markdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
+import remarkGfm from "remark-gfm";
 import styles from "./NoteDetail.module.scss";
 import { Tag } from "./Tag";
 
@@ -23,7 +24,10 @@ export const NoteDetail: FC<Props> = ({ note, tags }) => {
         </div>
       </div>
 
-      <Markdown className={styles.content} rehypePlugins={[rehypeHighlight]}>
+      <Markdown
+        className={styles.content}
+        rehypePlugins={[rehypeHighlight, remarkGfm]}
+      >
         {note.content}
       </Markdown>
     </div>
