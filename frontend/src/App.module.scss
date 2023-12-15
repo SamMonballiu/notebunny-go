@@ -16,6 +16,12 @@
 }
 
 .sortOptions {
+  display: flex;
+  gap: 8px;
+
+  select {
+    width: 50%;
+  }
 }
 
 .list {

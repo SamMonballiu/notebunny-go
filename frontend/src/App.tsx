@@ -13,19 +13,24 @@ function App() {
   const [tags, setTags] = useState<Tag[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [sortOption, setSortOption] = useState<NoteSortOption>("creationDate");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 
   const sorted = useMemo(() => {
+    let sorted: Note[];
+
     switch (sortOption) {
       case "name":
-        return notes.sort((a, b) => (a.subject < b.subject ? -1 : 1));
+        sorted = notes.sort((a, b) => (a.subject < b.subject ? -1 : 1));
+        break;
       case "creationDate":
-        return notes
-          .sort((a, b) => (a.createdOn < b.createdOn ? -1 : 1))
-          .reverse();
+        sorted = notes.sort((a, b) => (a.createdOn < b.createdOn ? -1 : 1));
+        break;
       default:
         return notes;
     }
-  }, [notes, sortOption]);
+
+    return sortDirection === "asc" ? sorted : sorted.reverse();
+  }, [notes, sortOption, sortDirection]);
 
   const { isFetching: isFetchingNotes } = useQuery(
     ["notes"],
@@ -85,6 +90,14 @@ function App() {
             selectedSortOption={sortOption}
             onSelect={(opt) => setSortOption(opt)}
           />
+          <select
+            value={sortDirection}
+            // @ts-ignore
+            onChange={(e) => setSortDirection(e.target.value)}
+          >
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
         </div>
       </section>
       <div className={styles.detail}>
