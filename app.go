@@ -25,8 +25,11 @@ func (a *App) startup(ctx context.Context) {
 	a.tagsRepo.Init("tags.json")
 }
 
-func (a *App) GetNotes() []Note {
-	return a.notesRepo.GetAll()
+func (a *App) GetNotes(searchTerm string) []Note {
+	if searchTerm == "" {
+		return a.notesRepo.GetAll()
+	}
+	return a.notesRepo.Filter(searchTerm)
 }
 
 func (a *App) GetTags() []Tag {

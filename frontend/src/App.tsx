@@ -1,9 +1,9 @@
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { GetNotes, GetTags } from "../wailsjs/go/main/App";
 import "./App.css";
 import { NotesList } from "./components/NoteList";
 import { Note, NoteSortOption, Tag } from "./models";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import styles from "./App.module.scss";
 import { NoteDetail } from "./components/NoteDetail";
 import { NoteSortingDropdown } from "./components/NoteSortingDropdown";
@@ -14,6 +14,9 @@ function App() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [sortOption, setSortOption] = useState<NoteSortOption>("creationDate");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const queryClient = useQueryClient();
 
   const sorted = useMemo(() => {
     let sorted: Note[];
@@ -33,8 +36,8 @@ function App() {
   }, [notes, sortOption, sortDirection]);
 
   const { isFetching: isFetchingNotes } = useQuery(
-    ["notes"],
-    async () => await GetNotes(),
+    ["notes", searchTerm],
+    async () => await GetNotes(searchTerm),
     {
       onSuccess: (data) => {
         const mapped = data.map((x) => {
@@ -72,13 +75,19 @@ function App() {
     }
   );
 
-  if (isFetchingNotes || isFetchingTags) {
-    return <h1>Loading</h1>;
-  }
-
   return (
     <div className={styles.container}>
       <section className={styles.pane}>
+        <input
+          autoFocus
+          value={searchTerm}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              queryClient.invalidateQueries(["notes"]);
+            }
+          }}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
         <NotesList
           notes={sorted}
           className={styles.list}
@@ -101,7 +110,7 @@ function App() {
         </div>
       </section>
       <div className={styles.detail}>
-        {selectedIndex !== null && (
+        {selectedIndex !== null && sorted[selectedIndex] !== undefined && (
           <>
             <div className={styles.note}>
               <NoteDetail
