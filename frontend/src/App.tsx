@@ -9,6 +9,7 @@ import { NoteDetail } from "./components/NoteDetail";
 import { NoteSortingDropdown } from "./components/NoteSortingDropdown";
 import { NoteEdit } from "./components/NoteEdit";
 import { Button } from "./components/Button";
+import "./markdown.scss";
 
 type Viewmode = "list" | "create";
 

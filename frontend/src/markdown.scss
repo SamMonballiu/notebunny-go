@@ -1,0 +1,21 @@
+$pad: 8px;
+$code: rgb(245, 245, 245);
+
+@mixin code {
+  background: $code;
+  font-weight: 500;
+}
+
+pre {
+  @include code;
+  padding: $pad;
+  overflow: scroll;
+}
+
+code {
+  @include code;
+}
+
+:not(pre) > code {
+  padding: 2px;
+}
