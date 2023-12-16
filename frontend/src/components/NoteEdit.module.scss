@@ -1,0 +1,58 @@
+$paneWidth: 48vw;
+$padding: 8px;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: $padding;
+  height: calc(100vh - $padding * 2);
+}
+
+.subject {
+  input {
+    width: 100vw;
+  }
+}
+
+.edit {
+  display: flex;
+  justify-content: space-between;
+  flex-grow: 1;
+  overflow: scroll;
+}
+
+.left {
+  width: $paneWidth;
+  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex-grow: 1;
+  display: flex;
+  overflow: scroll;
+
+  textarea {
+    width: $paneWidth;
+    flex-grow: 1;
+    font-family: "Fira Code";
+    resize: none;
+    font-size: 0.8em;
+  }
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.preview {
+  background: white;
+  width: $paneWidth;
+  border: 1px solid #999;
+  padding: $padding;
+  overflow: scroll;
+}

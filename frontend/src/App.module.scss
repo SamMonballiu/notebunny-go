@@ -7,13 +7,21 @@ $pad: 8px;
   height: 100vh;
   justify-content: space-between;
   align-items: flex-start;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.main {
+  display: flex;
+  justify-content: space-between;
+  overflow: scroll;
+  flex-grow: 1;
 }
 
 .pane {
   padding-top: $pad;
   padding-bottom: $pad;
   padding-left: $pad;
-  height: calc(100vh - $pad * 2);
   width: 33vw;
   display: flex;
   flex-direction: column;
@@ -30,8 +38,6 @@ $pad: 8px;
 }
 
 .list {
-  //   width: 33vw;
-  //   max-height: 50vh;
   flex-grow: 1;
   overflow: scroll;
   font-family: "Rethink Sans";
@@ -39,7 +45,6 @@ $pad: 8px;
 
 .detail {
   width: 67vw;
-  height: 100vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -53,6 +58,14 @@ $pad: 8px;
     padding: 0 12px;
     overflow: auto;
   }
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  width: calc(100% - 16px);
+  padding: 8px;
 }
 
 body {

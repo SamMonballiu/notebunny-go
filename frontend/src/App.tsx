@@ -7,6 +7,10 @@ import { useState, useMemo, useRef } from "react";
 import styles from "./App.module.scss";
 import { NoteDetail } from "./components/NoteDetail";
 import { NoteSortingDropdown } from "./components/NoteSortingDropdown";
+import { NoteEdit } from "./components/NoteEdit";
+import { Button } from "./components/Button";
+
+type Viewmode = "list" | "create";
 
 function App() {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -15,6 +19,7 @@ function App() {
   const [sortOption, setSortOption] = useState<NoteSortOption>("creationDate");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [searchTerm, setSearchTerm] = useState("");
+  const [viewmode, setViewmode] = useState<Viewmode>("list");
 
   const queryClient = useQueryClient();
 
@@ -75,55 +80,84 @@ function App() {
     }
   );
 
-  return (
-    <div className={styles.container}>
-      <section className={styles.pane}>
-        <input
-          autoFocus
-          value={searchTerm}
-          onKeyUp={(e) => {
-            if (e.key === "Enter") {
-              queryClient.invalidateQueries(["notes"]);
-            }
-          }}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <NotesList
-          notes={sorted}
-          className={styles.list}
-          selectedIndex={selectedIndex}
-          onSelect={setSelectedIndex}
-        />
-        <div className={styles.sortOptions}>
-          <NoteSortingDropdown
-            selectedSortOption={sortOption}
-            onSelect={(opt) => setSortOption(opt)}
-          />
-          <select
-            value={sortDirection}
-            // @ts-ignore
-            onChange={(e) => setSortDirection(e.target.value)}
-          >
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
-          </select>
-        </div>
-      </section>
-      <div className={styles.detail}>
-        {selectedIndex !== null && sorted[selectedIndex] !== undefined && (
-          <>
-            <div className={styles.note}>
-              <NoteDetail
-                note={sorted[selectedIndex]}
-                tags={tags.filter((t) =>
-                  sorted[selectedIndex].tagIds.includes(t.id)
-                )}
+  // if (isFetchingNotes) {
+  //   return null;
+  // }
+
+  if (viewmode === "list") {
+    return (
+      <div className={styles.container}>
+        <section className={styles.main}>
+          <section className={styles.pane}>
+            <input
+              autoFocus
+              value={searchTerm}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  queryClient.invalidateQueries(["notes"]);
+                }
+              }}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <NotesList
+              notes={sorted}
+              className={styles.list}
+              selectedIndex={selectedIndex}
+              onSelect={setSelectedIndex}
+            />
+            <div className={styles.sortOptions}>
+              <NoteSortingDropdown
+                selectedSortOption={sortOption}
+                onSelect={(opt) => setSortOption(opt)}
               />
+              <select
+                value={sortDirection}
+                // @ts-ignore
+                onChange={(e) => setSortDirection(e.target.value)}
+              >
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+              </select>
             </div>
-          </>
-        )}
+          </section>
+
+          <section className={styles.detail}>
+            {selectedIndex !== null && sorted[selectedIndex] !== undefined && (
+              <>
+                <div className={styles.note}>
+                  <NoteDetail
+                    note={sorted[selectedIndex]}
+                    tags={tags.filter((t) =>
+                      sorted[selectedIndex].tagIds.includes(t.id)
+                    )}
+                  />
+                </div>
+              </>
+            )}
+          </section>
+        </section>
+        <section className={styles.buttons}>
+          <Button label="Delete" variant="danger" disabled />
+          <Button
+            label="Edit"
+            variant="primary"
+            disabled={selectedIndex === null}
+            action={() => {
+              setViewmode("create");
+            }}
+          />
+          <Button label="New" disabled />
+        </section>
       </div>
-    </div>
+    );
+  }
+
+  return (
+    <NoteEdit
+      onSave={() => alert("todo")}
+      onCancel={() => setViewmode("list")}
+      note={sorted[selectedIndex ?? 0]}
+    />
   );
 }
 

@@ -24,12 +24,11 @@ export const NoteDetail: FC<Props> = ({ note, tags }) => {
         </div>
       </div>
 
-      <Markdown
-        className={styles.content}
-        rehypePlugins={[rehypeHighlight, remarkGfm]}
-      >
-        {note.content}
-      </Markdown>
+      <div className={styles.content}>
+        <Markdown rehypePlugins={[rehypeHighlight, remarkGfm]}>
+          {note.content}
+        </Markdown>
+      </div>
     </div>
   );
 };
