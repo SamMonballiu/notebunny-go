@@ -20,6 +20,7 @@ export const NotesList: FC<Props> = ({
     <section className={cx(className, styles.container)}>
       {notes.map((x, idx) => (
         <p
+          key={x.id}
           onClick={() => onSelect(idx)}
           className={cx(styles.note, {
             [styles.selected]: idx === selectedIndex,
