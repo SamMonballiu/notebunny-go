@@ -5,3 +5,5 @@ import {main} from '../models';
 export function GetNotes(arg1:string):Promise<Array<main.Note>>;
 
 export function GetTags():Promise<Array<main.Tag>>;
+
+export function UpdateNote(arg1:string,arg2:main.Note):Promise<main.CommandResult>;

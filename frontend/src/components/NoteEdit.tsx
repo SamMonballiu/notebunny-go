@@ -9,7 +9,7 @@ import { Button } from "./Button";
 interface Props {
   note: Note;
   onCancel: () => void;
-  onSave: () => void;
+  onSave: (subject: string, content: string) => void;
 }
 
 export const NoteEdit: FC<Props> = ({ note, onCancel, onSave }) => {
@@ -20,6 +20,7 @@ export const NoteEdit: FC<Props> = ({ note, onCancel, onSave }) => {
       <div className={styles.subject}>
         <input
           type="text"
+          autoFocus
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
         />
@@ -41,7 +42,7 @@ export const NoteEdit: FC<Props> = ({ note, onCancel, onSave }) => {
       </div>
       <div className={styles.buttons}>
         <Button label="Cancel" action={onCancel} />
-        <Button label="Save" action={onSave} />
+        <Button label="Save" action={() => onSave(subject, content)} />
       </div>
     </div>
   );

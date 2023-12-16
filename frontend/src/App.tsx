@@ -1,8 +1,8 @@
 import { useQuery, useQueryClient } from "react-query";
-import { GetNotes, GetTags } from "../wailsjs/go/main/App";
+import { GetNotes, GetTags, UpdateNote } from "../wailsjs/go/main/App";
 import "./App.css";
 import { NotesList } from "./components/NoteList";
-import { Note, NoteSortOption, Tag } from "./models";
+import { CommandResult, Note, NoteSortOption, Tag } from "./models";
 import { useState, useMemo, useRef } from "react";
 import styles from "./App.module.scss";
 import { NoteDetail } from "./components/NoteDetail";
@@ -154,7 +154,20 @@ function App() {
 
   return (
     <NoteEdit
-      onSave={() => alert("todo")}
+      onSave={async (subject: string, content: string) => {
+        const selectedNote = sorted[selectedIndex!];
+        const result: CommandResult = await UpdateNote(selectedNote.id, {
+          ...selectedNote,
+          subject,
+          content,
+        });
+        if (result.Success) {
+          setViewmode("list");
+          queryClient.invalidateQueries(["notes"]);
+        } else {
+          alert(`An error occurred: ${result.Feedback}`);
+        }
+      }}
       onCancel={() => setViewmode("list")}
       note={sorted[selectedIndex ?? 0]}
     />

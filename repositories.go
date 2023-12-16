@@ -13,6 +13,7 @@ type INotesRepository interface {
 	Add(note Note)
 	Remove(note Note)
 	Filter(term string)
+	Update(id string, updated Note) CommandResult
 }
 
 type NotesRepository struct {
@@ -20,18 +21,23 @@ type NotesRepository struct {
 	Path  string
 }
 
+type CommandResult struct {
+	Success  bool
+	Feedback string
+}
+
 func (repo NotesRepository) GetAll() []Note {
 	return repo.notes
 }
 
 func (repo NotesRepository) Filter(term string) []Note {
-	searchTerm := strings.ToLower(term)
-
 	results := make([]Note, 0)
+	searchTerm := strings.ToLower(term)
+	match := func(trm string) bool {
+		return strings.Contains(strings.ToLower(trm), searchTerm)
+	}
+
 	for _, note := range repo.notes {
-		match := func(trm string) bool {
-			return strings.Contains(strings.ToLower(trm), searchTerm)
-		}
 		contentMatch := match(note.Content)
 		subjectMatch := match(note.Subject)
 
@@ -41,6 +47,42 @@ func (repo NotesRepository) Filter(term string) []Note {
 	}
 
 	return results
+}
+
+func (repo NotesRepository) Update(id string, updated Note) CommandResult {
+	for idx, note := range repo.notes {
+		if note.Id == id {
+			repo.notes[idx].Subject = updated.Subject
+			repo.notes[idx].Content = updated.Content
+		}
+	}
+	err := repo.Save()
+
+	var result CommandResult
+
+	if err != nil {
+		result = CommandResult{Success: false, Feedback: err.Error()}
+	} else {
+		result = CommandResult{Success: true}
+	}
+
+	return result
+}
+
+func (repo *NotesRepository) Save() error {
+	data, err := json.Marshal(repo.notes)
+
+	if err != nil {
+		return err
+	}
+
+	err = os.WriteFile(repo.Path, data, 0644)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (repo *NotesRepository) Init(path string) {

@@ -32,6 +32,11 @@ func (a *App) GetNotes(searchTerm string) []Note {
 	return a.notesRepo.Filter(searchTerm)
 }
 
+func (a *App) UpdateNote(id string, updated Note) CommandResult {
+	result := a.notesRepo.Update(id, updated)
+	return result
+}
+
 func (a *App) GetTags() []Tag {
 	return a.tagsRepo.GetAll()
 }

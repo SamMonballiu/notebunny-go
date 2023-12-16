@@ -12,4 +12,9 @@ export interface Tag {
   createdOn: Date;
 }
 
+export interface CommandResult {
+  Success: boolean;
+  Feedback: string;
+}
+
 export type NoteSortOption = "name" | "creationDate";

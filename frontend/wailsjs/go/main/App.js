@@ -9,3 +9,7 @@ export function GetNotes(arg1) {
 export function GetTags() {
   return window['go']['main']['App']['GetTags']();
 }
+
+export function UpdateNote(arg1, arg2) {
+  return window['go']['main']['App']['UpdateNote'](arg1, arg2);
+}
