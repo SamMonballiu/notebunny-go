@@ -28,6 +28,18 @@ export const NoteDetail: FC<Props> = ({ note, tags }) => {
       <div className={styles.content}>
         <Markdown
           components={{
+            a(props) {
+              return (
+                <a
+                  {...props}
+                  href="#"
+                  onClick={() => {
+                    //@ts-ignore
+                    window.runtime.BrowserOpenURL(props.href);
+                  }}
+                />
+              );
+            },
             code(props) {
               const { children, className, node, ...rest } = props;
               const match = /language-(\w+)/.exec(className || "");
