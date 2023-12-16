@@ -3,7 +3,7 @@ import { GetNotes, GetTags, UpdateNote } from "../wailsjs/go/main/App";
 import "./App.css";
 import { NotesList } from "./components/NoteList";
 import { CommandResult, Note, NoteSortOption, Tag } from "./models";
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import styles from "./App.module.scss";
 import { NoteDetail } from "./components/NoteDetail";
 import { NoteSortingDropdown } from "./components/NoteSortingDropdown";
@@ -19,8 +19,17 @@ function App() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [sortOption, setSortOption] = useState<NoteSortOption>("creationDate");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchInputValue, setSearchInputValue] = useState("");
+  const [actualSearchTerm, setActualSearchTerm] = useState("");
   const [viewmode, setViewmode] = useState<Viewmode>("list");
+
+  useEffect(() => {
+    const searchUpdateTimeout = setTimeout(() => {
+      setActualSearchTerm(searchInputValue);
+    }, 400);
+
+    return () => clearTimeout(searchUpdateTimeout);
+  }, [searchInputValue]);
 
   const queryClient = useQueryClient();
 
@@ -42,8 +51,8 @@ function App() {
   }, [notes, sortOption, sortDirection]);
 
   const { isFetching: isFetchingNotes } = useQuery(
-    ["notes", searchTerm],
-    async () => await GetNotes(searchTerm),
+    ["notes", actualSearchTerm],
+    async () => await GetNotes(searchInputValue),
     {
       onSuccess: (data) => {
         const mapped = data.map((x) => {
@@ -92,13 +101,13 @@ function App() {
           <section className={styles.pane}>
             <input
               autoFocus
-              value={searchTerm}
+              value={searchInputValue}
               onKeyUp={(e) => {
                 if (e.key === "Enter") {
                   queryClient.invalidateQueries(["notes"]);
                 }
               }}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => setSearchInputValue(e.target.value)}
             />
             <NotesList
               notes={sorted}
