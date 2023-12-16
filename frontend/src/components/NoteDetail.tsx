@@ -1,10 +1,11 @@
 import { Note, Tag as TagModel } from "../models";
 import { FC } from "react";
 import Markdown from "react-markdown";
-import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 import styles from "./NoteDetail.module.scss";
 import { Tag } from "./Tag";
+
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 
 interface Props {
   note: Note;
@@ -25,7 +26,29 @@ export const NoteDetail: FC<Props> = ({ note, tags }) => {
       </div>
 
       <div className={styles.content}>
-        <Markdown rehypePlugins={[rehypeHighlight, remarkGfm]}>
+        <Markdown
+          components={{
+            code(props) {
+              const { children, className, node, ...rest } = props;
+              const match = /language-(\w+)/.exec(className || "");
+              return match ? (
+                //@ts-ignore
+                <SyntaxHighlighter
+                  {...rest}
+                  PreTag="div"
+                  children={String(children).replace(/\n$/, "")}
+                  language={match[1]}
+                  // style={light}
+                />
+              ) : (
+                <code {...rest} className={className}>
+                  {children}
+                </code>
+              );
+            },
+          }}
+          rehypePlugins={[remarkGfm]}
+        >
           {note.content}
         </Markdown>
       </div>

@@ -6,16 +6,21 @@ $code: rgb(245, 245, 245);
   font-weight: 500;
 }
 
-pre {
-  @include code;
-  padding: $pad;
-  overflow: scroll;
-}
+// pre {
+//   @include code;
+//   padding: $pad;
+//   overflow: scroll;
+// }
 
-code {
-  @include code;
-}
+// code {
+//   @include code;
+//}
 
 :not(pre) > code {
+  @include code;
   padding: 2px;
+}
+
+pre div {
+  font-family: "Fira Code";
 }
