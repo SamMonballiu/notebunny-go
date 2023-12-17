@@ -1,22 +1,38 @@
 import { FC, useState } from "react";
 import styles from "./NoteEdit.module.scss";
 import Markdown from "react-markdown";
-import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 import { Note } from "../models";
 import { Button } from "./Button";
 
 interface Props {
-  note: Note;
+  note?: Note;
   onCancel: () => void;
   onSave: (subject: string, content: string) => void;
 }
 
 export const NoteEdit: FC<Props> = ({ note, onCancel, onSave }) => {
-  const [subject, setSubject] = useState<string>(note.subject);
-  const [content, setContent] = useState<string>(note.content);
+  const header = note ? "Edit note" : "New note";
+  const unsavedMsg = "Are you sure? Unsaved changes will be lost.";
+  const initial = {
+    subject: note?.subject ?? "",
+    content: note?.content ?? "",
+  };
+  const [subject, setSubject] = useState<string>(initial.subject);
+  const [content, setContent] = useState<string>(initial.content);
+
+  const isDirty = () =>
+    subject !== initial.subject || content !== initial.content;
+
+  const handleCancel = () => {
+    if (!isDirty() || (isDirty() && confirm(unsavedMsg))) {
+      onCancel();
+    }
+  };
+
   return (
     <div className={styles.container}>
+      <h1>{header}</h1>
       <div className={styles.subject}>
         <input
           type="text"
@@ -35,14 +51,17 @@ export const NoteEdit: FC<Props> = ({ note, onCancel, onSave }) => {
           </div>
         </div>
         <div className={styles.preview}>
-          <Markdown rehypePlugins={[rehypeHighlight, remarkGfm]}>
-            {content}
-          </Markdown>
+          <Markdown rehypePlugins={[remarkGfm]}>{content}</Markdown>
         </div>
       </div>
       <div className={styles.buttons}>
-        <Button label="Cancel" action={onCancel} />
-        <Button label="Save" action={() => onSave(subject, content)} />
+        <Button label="Cancel" action={handleCancel} />
+        <Button
+          label="Save"
+          variant="primary"
+          disabled={!isDirty() || subject === ""}
+          action={() => onSave(subject, content)}
+        />
       </div>
     </div>
   );

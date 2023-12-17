@@ -6,12 +6,6 @@ $padding: 8px;
   padding: $padding;
   gap: 8px;
   height: 90vh;
-
-  h1 {
-    font-family: "Raleway";
-    font-weight: 300;
-    font-size: clamp(24px, 2.4vw, 400px);
-  }
 }
 
 .content {

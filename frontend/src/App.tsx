@@ -11,7 +11,7 @@ import { NoteEdit } from "./components/NoteEdit";
 import { Button } from "./components/Button";
 import "./markdown.scss";
 
-type Viewmode = "list" | "create";
+type Viewmode = "list" | "edit" | "create";
 
 function App() {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -94,6 +94,25 @@ function App() {
   //   return null;
   // }
 
+  const handleCreate = async (subject: string, content: string) => {
+    alert("todo");
+  };
+
+  const handleUpdate = async (subject: string, content: string) => {
+    const selectedNote = sorted[selectedIndex!];
+    const result: CommandResult = await UpdateNote(selectedNote.id, {
+      ...selectedNote,
+      subject,
+      content,
+    });
+    if (result.Success) {
+      setViewmode("list");
+      queryClient.invalidateQueries(["notes"]);
+    } else {
+      alert(`An error occurred: ${result.Feedback}`);
+    }
+  };
+
   if (viewmode === "list") {
     return (
       <div className={styles.container}>
@@ -153,10 +172,10 @@ function App() {
             variant="primary"
             disabled={selectedIndex === null}
             action={() => {
-              setViewmode("create");
+              setViewmode("edit");
             }}
           />
-          <Button label="New" disabled />
+          <Button label="New" action={() => setViewmode("create")} />
         </section>
       </div>
     );
@@ -164,22 +183,9 @@ function App() {
 
   return (
     <NoteEdit
-      onSave={async (subject: string, content: string) => {
-        const selectedNote = sorted[selectedIndex!];
-        const result: CommandResult = await UpdateNote(selectedNote.id, {
-          ...selectedNote,
-          subject,
-          content,
-        });
-        if (result.Success) {
-          setViewmode("list");
-          queryClient.invalidateQueries(["notes"]);
-        } else {
-          alert(`An error occurred: ${result.Feedback}`);
-        }
-      }}
+      onSave={viewmode === "create" ? handleCreate : handleUpdate}
       onCancel={() => setViewmode("list")}
-      note={sorted[selectedIndex ?? 0]}
+      note={viewmode === "create" ? undefined : sorted[selectedIndex ?? 0]}
     />
   );
 }
