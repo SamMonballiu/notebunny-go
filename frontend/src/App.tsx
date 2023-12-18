@@ -3,6 +3,7 @@ import {
   CreateNote,
   GetNotes,
   GetTags,
+  RemoveNote,
   UpdateNote,
 } from "../wailsjs/go/main/App";
 import "./App.css";
@@ -15,6 +16,7 @@ import { NoteSortingDropdown } from "./components/NoteSortingDropdown";
 import { NoteEdit } from "./components/NoteEdit";
 import { Button } from "./components/Button";
 import "./markdown.scss";
+import { ConfirmDialog } from "./components/ConfirmDialog";
 
 type Viewmode = "list" | "edit" | "create";
 
@@ -27,6 +29,7 @@ function App() {
   const [searchInputValue, setSearchInputValue] = useState("");
   const [actualSearchTerm, setActualSearchTerm] = useState("");
   const [viewmode, setViewmode] = useState<Viewmode>("list");
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   useEffect(() => {
     const searchUpdateTimeout = setTimeout(() => {
@@ -138,9 +141,27 @@ function App() {
     }
   };
 
+  const handleDelete = async (note: Note) => {
+    const id = note.id;
+    const result: CommandResult = await RemoveNote(id);
+    if (result.Success) {
+      queryClient.invalidateQueries(["notes"]);
+      queryClient.invalidateQueries(["tags"]);
+      setShowDeleteDialog(false);
+    } else {
+      alert(`An error occurred: ${result.Feedback}`);
+    }
+  };
+
   if (viewmode === "list") {
     return (
       <div className={styles.container}>
+        <ConfirmDialog
+          isOpen={showDeleteDialog}
+          onClose={() => setShowDeleteDialog(false)}
+          title="Delete"
+          onConfirm={async () => handleDelete(sorted[selectedIndex!])}
+        />
         <section className={styles.main}>
           <section className={styles.pane}>
             <input
@@ -191,7 +212,12 @@ function App() {
           </section>
         </section>
         <section className={styles.buttons}>
-          <Button label="Delete" variant="danger" disabled />
+          <Button
+            label="Delete"
+            variant="danger"
+            disabled={selectedIndex === null}
+            action={() => setShowDeleteDialog(true)}
+          />
           <Button
             label="Edit"
             variant="primary"

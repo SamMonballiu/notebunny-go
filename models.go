@@ -8,6 +8,7 @@ type Note struct {
 	Subject   string
 	Content   string
 	TagIds    []string
+	IsDeleted bool
 }
 
 type Tag struct {

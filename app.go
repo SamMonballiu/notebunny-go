@@ -27,16 +27,24 @@ func (a *App) startup(ctx context.Context) {
 }
 
 func (a *App) GetNotes(searchTerm string) []Note {
+	var collection []Note
 	if searchTerm == "" {
-		return a.notesRepo.GetAll()
+		collection = a.notesRepo.GetAll()
+	} else {
+		collection = a.notesRepo.Filter(searchTerm)
 	}
-	return a.notesRepo.Filter(searchTerm)
+
+	return Filter(collection, func(note Note) bool { return !note.IsDeleted })
 }
 
 func (a *App) UpdateNote(id string, updated *Note, tags string) CommandResult {
 	(*updated).TagIds = getUpsertedTagIds(&a.tagsRepo, tags)
 	result := a.notesRepo.Update(id, *updated)
 	return result
+}
+
+func (a *App) RemoveNote(id string) CommandResult {
+	return a.notesRepo.Remove(id)
 }
 
 func (a *App) CreateNote(subject string, content string, tags string) CommandResult {

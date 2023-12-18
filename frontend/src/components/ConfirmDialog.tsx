@@ -5,7 +5,7 @@ import { Button } from "./Button";
 
 interface Props {
   title: string;
-  message: string;
+  message?: string;
   onConfirm: () => void;
   isOpen: boolean;
   onClose: () => void;
@@ -13,7 +13,7 @@ interface Props {
 
 export const ConfirmDialog: FC<Props> = ({
   title,
-  message,
+  message = "Are you sure?",
   onConfirm,
   ...props
 }) => {

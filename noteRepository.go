@@ -14,7 +14,7 @@ type INotesRepository interface {
 	Init(path string)
 	GetAll() []Note
 	Add(note Note) CommandResult
-	Remove(note Note)
+	Remove(id string) CommandResult
 	Filter(term string)
 	Update(id string, updated *Note) CommandResult
 }
@@ -60,6 +60,42 @@ func (repo *NotesRepository) Add(note Note) CommandResult {
 	err := repo.Save()
 
 	var result CommandResult
+	if err != nil {
+		result = CommandResult{Success: false, Feedback: err.Error()}
+	} else {
+		result = CommandResult{Success: true}
+	}
+
+	return result
+}
+
+func Filter[T Note | Tag](collection []T, predicate func(x T) bool) []T {
+	var results []T
+
+	for _, item := range collection {
+		if predicate(item) {
+			results = append(results, item)
+		}
+	}
+
+	return results
+}
+
+// https://stackoverflow.com/a/57213476
+func removeIndex(collection []Note, index int) []Note {
+	return append(collection[:index], collection[index+1:]...)
+}
+
+func (repo *NotesRepository) Remove(id string) CommandResult {
+	for i, note := range repo.notes {
+		if note.Id == id {
+			repo.notes[i].IsDeleted = true
+		}
+	}
+
+	err := repo.Save()
+	var result CommandResult
+
 	if err != nil {
 		result = CommandResult{Success: false, Feedback: err.Error()}
 	} else {

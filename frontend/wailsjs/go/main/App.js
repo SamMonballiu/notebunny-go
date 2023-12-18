@@ -14,6 +14,10 @@ export function GetTags() {
   return window['go']['main']['App']['GetTags']();
 }
 
+export function RemoveNote(arg1) {
+  return window['go']['main']['App']['RemoveNote'](arg1);
+}
+
 export function UpdateNote(arg1, arg2, arg3) {
   return window['go']['main']['App']['UpdateNote'](arg1, arg2, arg3);
 }
