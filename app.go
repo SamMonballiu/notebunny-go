@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"strings"
 )
 
 // App struct
@@ -32,11 +33,48 @@ func (a *App) GetNotes(searchTerm string) []Note {
 	return a.notesRepo.Filter(searchTerm)
 }
 
-func (a *App) UpdateNote(id string, updated Note) CommandResult {
-	result := a.notesRepo.Update(id, updated)
+func (a *App) UpdateNote(id string, updated *Note, tags string) CommandResult {
+	(*updated).TagIds = getUpsertedTagIds(&a.tagsRepo, tags)
+	result := a.notesRepo.Update(id, *updated)
 	return result
+}
+
+func (a *App) CreateNote(subject string, content string, tags string) CommandResult {
+	note := Note{Subject: subject, Content: content, TagIds: getUpsertedTagIds(&a.tagsRepo, tags)}
+	return a.notesRepo.Add(note)
 }
 
 func (a *App) GetTags() []Tag {
 	return a.tagsRepo.GetAll()
+}
+
+func getUpsertedTagIds(tagsRepo *TagsRepository, tags string) []string {
+	split := strings.Split(tags, ", ")
+	existing := make([]Tag, 0)
+	toCreate := make([]string, 0)
+
+	// Split tags up into existing or toCreate
+	for _, tagName := range split {
+		if tagsRepo.Has(tagName) {
+			existing = append(existing, *tagsRepo.Get(tagName))
+		} else {
+			toCreate = append(toCreate, tagName)
+		}
+	}
+
+	// Create tags
+	created := tagsRepo.AddRange(toCreate)
+
+	// Get IDs for newly created and existing tags
+	createdIds := make([]string, 0)
+	for _, tag := range created {
+		createdIds = append(createdIds, tag.Id)
+	}
+
+	existingIds := make([]string, 0)
+	for _, tag := range existing {
+		existingIds = append(existingIds, tag.Id)
+	}
+
+	return append(createdIds, existingIds...)
 }

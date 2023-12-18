@@ -1,5 +1,10 @@
 import { useQuery, useQueryClient } from "react-query";
-import { GetNotes, GetTags, UpdateNote } from "../wailsjs/go/main/App";
+import {
+  CreateNote,
+  GetNotes,
+  GetTags,
+  UpdateNote,
+} from "../wailsjs/go/main/App";
 import "./App.css";
 import { NotesList } from "./components/NoteList";
 import { CommandResult, Note, NoteSortOption, Tag } from "./models";
@@ -94,20 +99,40 @@ function App() {
   //   return null;
   // }
 
-  const handleCreate = async (subject: string, content: string) => {
-    alert("todo");
-  };
-
-  const handleUpdate = async (subject: string, content: string) => {
-    const selectedNote = sorted[selectedIndex!];
-    const result: CommandResult = await UpdateNote(selectedNote.id, {
-      ...selectedNote,
-      subject,
-      content,
-    });
+  const handleCreate = async (
+    subject: string,
+    content: string,
+    tags: string
+  ) => {
+    const result: CommandResult = await CreateNote(subject, content, tags);
     if (result.Success) {
       setViewmode("list");
       queryClient.invalidateQueries(["notes"]);
+      queryClient.invalidateQueries(["tags"]);
+    } else {
+      alert(`An error occurred: ${result.Feedback}`);
+    }
+  };
+
+  const handleUpdate = async (
+    subject: string,
+    content: string,
+    tags: string
+  ) => {
+    const selectedNote = sorted[selectedIndex!];
+    const result: CommandResult = await UpdateNote(
+      selectedNote.id,
+      {
+        ...selectedNote,
+        subject,
+        content,
+      },
+      tags
+    );
+    if (result.Success) {
+      setViewmode("list");
+      queryClient.invalidateQueries(["notes"]);
+      queryClient.invalidateQueries(["tags"]);
     } else {
       alert(`An error occurred: ${result.Feedback}`);
     }
@@ -183,6 +208,7 @@ function App() {
 
   return (
     <NoteEdit
+      tags={tags}
       onSave={viewmode === "create" ? handleCreate : handleUpdate}
       onCancel={() => setViewmode("list")}
       note={viewmode === "create" ? undefined : sorted[selectedIndex ?? 0]}

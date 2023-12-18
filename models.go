@@ -20,3 +20,8 @@ type NotesResponse struct {
 	Success bool
 	Notes   []Note
 }
+
+type CommandResult struct {
+	Success  bool
+	Feedback string
+}
