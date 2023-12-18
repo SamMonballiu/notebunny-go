@@ -4,6 +4,7 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Note, Tag } from "../models";
 import { Button } from "./Button";
+import { ConfirmDialog } from "./ConfirmDialog";
 
 interface Props {
   note?: Note;
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export const NoteEdit: FC<Props> = ({ note, tags, onCancel, onSave }) => {
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
   const header = note ? "Edit note" : "New note";
   const unsavedMsg = "Are you sure? Unsaved changes will be lost.";
   const initial = {
@@ -35,13 +37,22 @@ export const NoteEdit: FC<Props> = ({ note, tags, onCancel, onSave }) => {
     noteTags !== initial.tags;
 
   const handleCancel = () => {
-    if (!isDirty() || (isDirty() && confirm(unsavedMsg))) {
+    if (isDirty()) {
+      setShowCancelDialog(true);
+    } else {
       onCancel();
     }
   };
 
   return (
     <div className={styles.container}>
+      <ConfirmDialog
+        isOpen={showCancelDialog}
+        onClose={() => setShowCancelDialog(false)}
+        title="Cancel"
+        message={unsavedMsg}
+        onConfirm={() => onCancel()}
+      />
       <h1>{header}</h1>
       <section className={styles.subject}>
         <input

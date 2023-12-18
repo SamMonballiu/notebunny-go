@@ -9,6 +9,7 @@ interface Props {
   action?: () => void;
   disabled?: boolean;
   variant?: Variant;
+  autoFocus?: boolean;
 }
 
 export const Button: FC<Props> = ({
@@ -16,9 +17,11 @@ export const Button: FC<Props> = ({
   action,
   disabled,
   variant = "default",
+  autoFocus,
 }) => {
   return (
-    <span
+    <button
+      autoFocus={autoFocus}
       className={cx(styles.button, {
         [styles.primary]: variant === "primary",
         [styles.default]: variant === "default",
@@ -28,6 +31,6 @@ export const Button: FC<Props> = ({
       onClick={disabled ? undefined : action}
     >
       {label}
-    </span>
+    </button>
   );
 };
