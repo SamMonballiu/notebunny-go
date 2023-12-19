@@ -15,7 +15,7 @@ type INotesRepository interface {
 	GetAll() []Note
 	Add(note Note) CommandResult
 	Remove(id string) CommandResult
-	Filter(term string)
+	Filter(term string, tags []Tag)
 	Update(id string, updated *Note) CommandResult
 }
 
@@ -69,18 +69,6 @@ func (repo *NotesRepository) Add(note Note) CommandResult {
 	return result
 }
 
-func Filter[T Note | Tag](collection []T, predicate func(x T) bool) []T {
-	var results []T
-
-	for _, item := range collection {
-		if predicate(item) {
-			results = append(results, item)
-		}
-	}
-
-	return results
-}
-
 // https://stackoverflow.com/a/57213476
 func removeIndex(collection []Note, index int) []Note {
 	return append(collection[:index], collection[index+1:]...)
@@ -105,7 +93,7 @@ func (repo *NotesRepository) Remove(id string) CommandResult {
 	return result
 }
 
-func (repo NotesRepository) Filter(term string) []Note {
+func (repo NotesRepository) Filter(term string, tags []Tag) []Note {
 	results := make([]Note, 0)
 	searchTerm := strings.ToLower(term)
 	match := func(trm string) bool {
@@ -115,8 +103,9 @@ func (repo NotesRepository) Filter(term string) []Note {
 	for _, note := range repo.notes {
 		contentMatch := match(note.Content)
 		subjectMatch := match(note.Subject)
+		noteTags := Filter(tags, func(x Tag) bool { return Contains(note.TagIds, x.Id) })
 
-		if contentMatch || subjectMatch {
+		if contentMatch || subjectMatch || Any(noteTags, func(x Tag) bool { return match(x.Name) }) {
 			results = append(results, note)
 		}
 	}

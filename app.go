@@ -31,7 +31,8 @@ func (a *App) GetNotes(searchTerm string) []Note {
 	if searchTerm == "" {
 		collection = a.notesRepo.GetAll()
 	} else {
-		collection = a.notesRepo.Filter(searchTerm)
+		tags := a.tagsRepo.GetAll()
+		collection = a.notesRepo.Filter(searchTerm, tags)
 	}
 
 	return Filter(collection, func(note Note) bool { return !note.IsDeleted })
