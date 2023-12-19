@@ -20,7 +20,7 @@ $padding: 8px;
   display: flex;
   justify-content: space-between;
   flex-grow: 1;
-  overflow: scroll;
+  overflow: hidden;
 }
 
 .left {
@@ -33,7 +33,7 @@ $padding: 8px;
 .content {
   flex-grow: 1;
   display: flex;
-  overflow: scroll;
+  overflow: hidden;
 
   textarea {
     width: $paneWidth;
@@ -55,5 +55,5 @@ $padding: 8px;
   width: $paneWidth;
   border: 1px solid #999;
   padding: $padding;
-  overflow: scroll;
+  overflow: hidden;
 }

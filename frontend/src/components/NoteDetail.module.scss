@@ -13,7 +13,8 @@ $padding: 8px;
   border: 1px solid #999;
   flex-grow: 1;
   padding: $padding;
-  overflow: scroll;
+  overflow: hidden;
+  overflow-y: auto;
 }
 
 .details {

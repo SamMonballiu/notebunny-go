@@ -17,7 +17,7 @@ $font: "Atkinson Hyperlegible", sans-serif;
 .main {
   display: flex;
   justify-content: space-between;
-  overflow: scroll;
+  overflow: hidden;
   flex-grow: 1;
 }
 
@@ -37,13 +37,14 @@ $font: "Atkinson Hyperlegible", sans-serif;
 
   select {
     width: 50%;
+    font-family: $font;
   }
 }
 
 .list {
   flex-grow: 1;
-  overflow: scroll;
-  font-family: "Noto Sans";
+  overflow-y: scroll;
+  font-family: $font;
 }
 
 .detail {
@@ -59,7 +60,7 @@ $font: "Atkinson Hyperlegible", sans-serif;
 
   .note {
     padding: 0 12px;
-    overflow: auto;
+    overflow: hidden;
   }
 }
 
@@ -137,10 +138,14 @@ body {
 }
 
 h1 {
-  font-family: "DM Sans";
-  font-weight: 700;
   font-size: clamp(24px, 2.4vw, 400px);
   margin: 0;
+}
+
+h1,
+h2 {
+  font-family: "DM Sans";
+  font-weight: 700;
 }
 
 input[type="text"] {
