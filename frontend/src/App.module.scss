@@ -1,6 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500;&family=Noto+Sans:wght@100&family=Rethink+Sans:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@100;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible&display=swap");
 
 $pad: 8px;
+$font: "Atkinson Hyperlegible", sans-serif;
 
 .container {
   display: flex;
@@ -40,7 +43,7 @@ $pad: 8px;
 .list {
   flex-grow: 1;
   overflow: scroll;
-  font-family: "Rethink Sans";
+  font-family: "Noto Sans";
 }
 
 .detail {
@@ -69,7 +72,8 @@ $pad: 8px;
 }
 
 body {
-  font-family: "Rethink Sans";
+  font-family: $font;
+
   padding: 0;
   margin: 0;
   background: #eee;
@@ -101,6 +105,7 @@ body {
   background: -o-radial-gradient(
     center,
     ellipse cover,
+
     rgba(240, 240, 240, 1) 0%,
     rgba(230, 230, 230, 1) 47%,
     rgba(222, 222, 222, 1) 100%
@@ -132,8 +137,8 @@ body {
 }
 
 h1 {
-  font-family: "Noto Sans";
-  font-weight: 100;
+  font-family: "DM Sans";
+  font-weight: 700;
   font-size: clamp(24px, 2.4vw, 400px);
   margin: 0;
 }
