@@ -16,9 +16,16 @@ import { NoteSortingDropdown } from "./components/NoteSortingDropdown";
 import { NoteEdit } from "./components/NoteEdit";
 import "./markdown.scss";
 import { ConfirmDialog } from "./components/ConfirmDialog";
-import { MdAdd, MdEdit, MdDeleteForever } from "react-icons/md";
+import {
+  MdAdd,
+  MdEdit,
+  MdDeleteForever,
+  MdFullscreen,
+  MdFullscreenExit,
+} from "react-icons/md";
 import { IconButton } from "./components/IconButton";
 import { Sidebar } from "./components/Sidebar";
+import cx from "classnames";
 
 type Viewmode = "list" | "edit" | "create";
 
@@ -32,6 +39,7 @@ function App() {
   const [actualSearchTerm, setActualSearchTerm] = useState("");
   const [viewmode, setViewmode] = useState<Viewmode>("list");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showLeftPane, setShowLeftPane] = useState(true);
 
   useEffect(() => {
     const searchUpdateTimeout = setTimeout(() => {
@@ -162,6 +170,11 @@ function App() {
     return (
       <div className={styles.container}>
         <Sidebar>
+          <IconButton
+            icon={showLeftPane ? <MdFullscreen /> : <MdFullscreenExit />}
+            disabled={selectedIndex === null}
+            action={() => setShowLeftPane(!showLeftPane)}
+          />
           <IconButton icon={<MdAdd />} action={() => setViewmode("create")} />
           <IconButton
             icon={<MdEdit />}
@@ -185,40 +198,46 @@ function App() {
             onConfirm={async () => handleDelete(sorted[selectedIndex!])}
           />
           <section className={styles.main}>
-            <section className={styles.pane}>
-              <input
-                autoFocus
-                value={searchInputValue}
-                onKeyUp={(e) => {
-                  if (e.key === "Enter") {
-                    queryClient.invalidateQueries(["notes"]);
-                  }
-                }}
-                onChange={(e) => setSearchInputValue(e.target.value)}
-              />
-              <NotesList
-                notes={sorted}
-                className={styles.list}
-                selectedIndex={selectedIndex}
-                onSelect={setSelectedIndex}
-              />
-              <div className={styles.sortOptions}>
-                <NoteSortingDropdown
-                  selectedSortOption={sortOption}
-                  onSelect={(opt) => setSortOption(opt)}
+            {showLeftPane ? (
+              <section className={styles.pane}>
+                <input
+                  autoFocus
+                  value={searchInputValue}
+                  onKeyUp={(e) => {
+                    if (e.key === "Enter") {
+                      queryClient.invalidateQueries(["notes"]);
+                    }
+                  }}
+                  onChange={(e) => setSearchInputValue(e.target.value)}
                 />
-                <select
-                  value={sortDirection}
-                  // @ts-ignore
-                  onChange={(e) => setSortDirection(e.target.value)}
-                >
-                  <option value="asc">Ascending</option>
-                  <option value="desc">Descending</option>
-                </select>
-              </div>
-            </section>
+                <NotesList
+                  notes={sorted}
+                  className={styles.list}
+                  selectedIndex={selectedIndex}
+                  onSelect={setSelectedIndex}
+                />
+                <div className={styles.sortOptions}>
+                  <NoteSortingDropdown
+                    selectedSortOption={sortOption}
+                    onSelect={(opt) => setSortOption(opt)}
+                  />
+                  <select
+                    value={sortDirection}
+                    // @ts-ignore
+                    onChange={(e) => setSortDirection(e.target.value)}
+                  >
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                  </select>
+                </div>
+              </section>
+            ) : null}
 
-            <section className={styles.detail}>
+            <section
+              className={cx(styles.detail, {
+                [styles.expanded]: !showLeftPane,
+              })}
+            >
               {selectedIndex !== null &&
                 sorted[selectedIndex] !== undefined && (
                   <>

@@ -53,6 +53,10 @@ $font: "Atkinson Hyperlegible", sans-serif;
   font-family: $font;
 }
 
+.expanded {
+  width: calc(99vw - $pad * 2) !important;
+}
+
 .detail {
   width: 67vw;
   overflow: hidden;
