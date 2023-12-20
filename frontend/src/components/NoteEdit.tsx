@@ -5,6 +5,9 @@ import remarkGfm from "remark-gfm";
 import { Note, Tag } from "../models";
 import { Button } from "./Button";
 import { ConfirmDialog } from "./ConfirmDialog";
+import { MdCheck, MdClose } from "react-icons/md";
+import { Sidebar } from "./Sidebar";
+import { IconButton } from "./IconButton";
 
 interface Props {
   note?: Note;
@@ -46,50 +49,51 @@ export const NoteEdit: FC<Props> = ({ note, tags, onCancel, onSave }) => {
 
   return (
     <div className={styles.container}>
-      <ConfirmDialog
-        isOpen={showCancelDialog}
-        onClose={() => setShowCancelDialog(false)}
-        title="Cancel"
-        message={unsavedMsg}
-        onConfirm={() => onCancel()}
-      />
-      <h1>{header}</h1>
-      <section className={styles.subject}>
-        <input
-          type="text"
-          autoFocus
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
-        />
-      </section>
-      <section className={styles.tags}>
-        <input
-          type="text"
-          value={noteTags}
-          onChange={(e) => setNoteTags(e.target.value)}
-        />
-      </section>
-      <div className={styles.edit}>
-        <div className={styles.left}>
-          <div className={styles.content}>
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-            />
-          </div>
-        </div>
-        <div className={styles.preview}>
-          <Markdown rehypePlugins={[remarkGfm]}>{content}</Markdown>
-        </div>
-      </div>
-      <div className={styles.buttons}>
-        <Button label="Cancel" action={handleCancel} />
-        <Button
-          label="Save"
-          variant="primary"
+      <Sidebar>
+        <IconButton icon={<MdClose />} action={handleCancel} />
+        <IconButton
+          icon={<MdCheck />}
           disabled={!isDirty() || subject === ""}
           action={() => onSave(subject, content, noteTags)}
         />
+      </Sidebar>
+      <div className={styles.main}>
+        <ConfirmDialog
+          isOpen={showCancelDialog}
+          onClose={() => setShowCancelDialog(false)}
+          title="Cancel"
+          message={unsavedMsg}
+          onConfirm={() => onCancel()}
+        />
+        <h1>{header}</h1>
+        <section className={styles.subject}>
+          <input
+            type="text"
+            autoFocus
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+          />
+        </section>
+        <section className={styles.tags}>
+          <input
+            type="text"
+            value={noteTags}
+            onChange={(e) => setNoteTags(e.target.value)}
+          />
+        </section>
+        <div className={styles.edit}>
+          <div className={styles.left}>
+            <div className={styles.content}>
+              <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className={styles.preview}>
+            <Markdown rehypePlugins={[remarkGfm]}>{content}</Markdown>
+          </div>
+        </div>
       </div>
     </div>
   );

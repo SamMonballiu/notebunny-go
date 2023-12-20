@@ -1,59 +1,62 @@
-$paneWidth: 48vw;
-$padding: 8px;
+$padding: 12px;
 
 .container {
+  display: flex;
+  height: 100vh;
+}
+
+.main {
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding: $padding;
   height: calc(100vh - $padding * 2);
+  flex-grow: 1;
 }
 
 .subject,
 .tags {
+  padding-right: 4px;
   input {
-    width: 100vw;
+    width: 100%;
   }
 }
 
 .edit {
   display: flex;
   justify-content: space-between;
-  flex-grow: 1;
+  flex: 1;
   overflow: hidden;
+  gap: 8px;
 }
 
 .left {
-  width: $paneWidth;
+  flex: 1;
+  // flex-basis: 50%;
   justify-content: space-between;
   display: flex;
   flex-direction: column;
 }
 
 .content {
-  flex-grow: 1;
+  flex: 1;
   display: flex;
   overflow: hidden;
 
   textarea {
-    width: $paneWidth;
-    flex-grow: 1;
+    padding: 8px;
+    flex: 1;
     font-family: "Fira Code";
     resize: none;
     font-size: 0.8em;
   }
 }
 
-.buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
 .preview {
+  flex-grow: 1;
+  max-width: 49vw; // Needed to restrain the Markdown component
   background: white;
-  width: $paneWidth;
   border: 1px solid #999;
   padding: $padding;
-  overflow: hidden;
+  overflow: scroll;
 }

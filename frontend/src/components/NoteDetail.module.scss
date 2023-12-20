@@ -1,11 +1,11 @@
-$padding: 8px;
+$padding: 12px;
 
 .container {
   display: flex;
   flex-direction: column;
   padding: $padding;
   gap: 8px;
-  height: 90vh;
+  height: calc(100vh - $padding * 2);
 }
 
 .content {

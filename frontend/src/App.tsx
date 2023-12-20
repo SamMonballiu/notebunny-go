@@ -14,9 +14,11 @@ import styles from "./App.module.scss";
 import { NoteDetail } from "./components/NoteDetail";
 import { NoteSortingDropdown } from "./components/NoteSortingDropdown";
 import { NoteEdit } from "./components/NoteEdit";
-import { Button } from "./components/Button";
 import "./markdown.scss";
 import { ConfirmDialog } from "./components/ConfirmDialog";
+import { MdAdd, MdEdit, MdDeleteForever } from "react-icons/md";
+import { IconButton } from "./components/IconButton";
+import { Sidebar } from "./components/Sidebar";
 
 type Viewmode = "list" | "edit" | "create";
 
@@ -156,78 +158,80 @@ function App() {
   if (viewmode === "list") {
     return (
       <div className={styles.container}>
-        <ConfirmDialog
-          isOpen={showDeleteDialog}
-          onClose={() => setShowDeleteDialog(false)}
-          title="Delete"
-          onConfirm={async () => handleDelete(sorted[selectedIndex!])}
-        />
-        <section className={styles.main}>
-          <section className={styles.pane}>
-            <input
-              autoFocus
-              value={searchInputValue}
-              onKeyUp={(e) => {
-                if (e.key === "Enter") {
-                  queryClient.invalidateQueries(["notes"]);
-                }
-              }}
-              onChange={(e) => setSearchInputValue(e.target.value)}
-            />
-            <NotesList
-              notes={sorted}
-              className={styles.list}
-              selectedIndex={selectedIndex}
-              onSelect={setSelectedIndex}
-            />
-            <div className={styles.sortOptions}>
-              <NoteSortingDropdown
-                selectedSortOption={sortOption}
-                onSelect={(opt) => setSortOption(opt)}
-              />
-              <select
-                value={sortDirection}
-                // @ts-ignore
-                onChange={(e) => setSortDirection(e.target.value)}
-              >
-                <option value="asc">Ascending</option>
-                <option value="desc">Descending</option>
-              </select>
-            </div>
-          </section>
-
-          <section className={styles.detail}>
-            {selectedIndex !== null && sorted[selectedIndex] !== undefined && (
-              <>
-                <div className={styles.note}>
-                  <NoteDetail
-                    note={sorted[selectedIndex]}
-                    tags={tags.filter((t) =>
-                      sorted[selectedIndex].tagIds.includes(t.id)
-                    )}
-                  />
-                </div>
-              </>
-            )}
-          </section>
-        </section>
-        <section className={styles.buttons}>
-          <Button
-            label="Delete"
-            variant="danger"
+        <Sidebar>
+          <IconButton icon={<MdAdd />} action={() => setViewmode("create")} />
+          <IconButton
+            icon={<MdEdit />}
+            disabled={selectedIndex === null}
+            action={() => setViewmode("edit")}
+          />
+          <IconButton
+            icon={<MdDeleteForever />}
             disabled={selectedIndex === null}
             action={() => setShowDeleteDialog(true)}
           />
-          <Button
-            label="Edit"
-            variant="primary"
-            disabled={selectedIndex === null}
-            action={() => {
-              setViewmode("edit");
-            }}
+        </Sidebar>
+        <div className={styles.mainPanel}>
+          <ConfirmDialog
+            isOpen={showDeleteDialog}
+            onClose={() => setShowDeleteDialog(false)}
+            title="Delete"
+            message={`Are you sure you want to delete '${
+              sorted[selectedIndex!]?.subject
+            }'? This will remove it from the list.`}
+            onConfirm={async () => handleDelete(sorted[selectedIndex!])}
           />
-          <Button label="New" action={() => setViewmode("create")} />
-        </section>
+          <section className={styles.main}>
+            <section className={styles.pane}>
+              <input
+                autoFocus
+                value={searchInputValue}
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    queryClient.invalidateQueries(["notes"]);
+                  }
+                }}
+                onChange={(e) => setSearchInputValue(e.target.value)}
+              />
+              <NotesList
+                notes={sorted}
+                className={styles.list}
+                selectedIndex={selectedIndex}
+                onSelect={setSelectedIndex}
+              />
+              <div className={styles.sortOptions}>
+                <NoteSortingDropdown
+                  selectedSortOption={sortOption}
+                  onSelect={(opt) => setSortOption(opt)}
+                />
+                <select
+                  value={sortDirection}
+                  // @ts-ignore
+                  onChange={(e) => setSortDirection(e.target.value)}
+                >
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
+                </select>
+              </div>
+            </section>
+
+            <section className={styles.detail}>
+              {selectedIndex !== null &&
+                sorted[selectedIndex] !== undefined && (
+                  <>
+                    <div className={styles.note}>
+                      <NoteDetail
+                        note={sorted[selectedIndex]}
+                        tags={tags.filter((t) =>
+                          sorted[selectedIndex].tagIds.includes(t.id)
+                        )}
+                      />
+                    </div>
+                  </>
+                )}
+            </section>
+          </section>
+        </div>
       </div>
     );
   }
