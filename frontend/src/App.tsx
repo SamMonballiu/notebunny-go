@@ -77,6 +77,9 @@ function App() {
           return note;
         });
         setNotes(mapped);
+        if (mapped.length === 1 && actualSearchTerm !== "") {
+          setSelectedIndex(0);
+        }
       },
     }
   );
