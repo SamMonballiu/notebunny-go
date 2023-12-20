@@ -4,7 +4,7 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import styles from "./NoteDetail.module.scss";
 import { Tag } from "./Tag";
-
+import { FaCalendarDays, FaTag } from "react-icons/fa6";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 
 interface Props {
@@ -13,16 +13,23 @@ interface Props {
 }
 
 export const NoteDetail: FC<Props> = ({ note, tags }) => {
+  console.log(tags);
   return (
     <div className={styles.container}>
       <h1>{note.subject}</h1>
       <div className={styles.details}>
+        <FaCalendarDays />
         <h4>{note.createdOn?.toLocaleDateString()}</h4>
-        <div className={styles.tags}>
-          {tags.map((t) => (
-            <Tag tag={t} key={t.id} />
-          ))}
-        </div>
+        {tags.length > 0 ? (
+          <div style={{ display: "flex" }}>
+            <FaTag />
+            <div className={styles.tags}>
+              {tags.map((t) => (
+                <Tag tag={t} key={t.id} />
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
 
       <div className={styles.content}>
