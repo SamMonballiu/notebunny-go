@@ -161,3 +161,11 @@ h2 {
 input[type="text"] {
   font-size: 1em;
 }
+
+blockquote {
+  background: rgb(245, 242, 240);
+  border-left: 6px solid rgb(0, 119, 170);
+  padding: $pad;
+  font-style: italic;
+  font-size: 0.9em;
+}
