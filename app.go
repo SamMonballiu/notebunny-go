@@ -58,6 +58,10 @@ func (a *App) GetTags() []Tag {
 }
 
 func getUpsertedTagIds(tagsRepo *TagsRepository, tags string) []string {
+	if tags == "" {
+		return make([]string, 0)
+	}
+
 	split := strings.Split(tags, ", ")
 	existing := make([]Tag, 0)
 	toCreate := make([]string, 0)

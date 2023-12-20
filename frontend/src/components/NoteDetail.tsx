@@ -13,7 +13,6 @@ interface Props {
 }
 
 export const NoteDetail: FC<Props> = ({ note, tags }) => {
-  console.log(tags);
   return (
     <div className={styles.container}>
       <h1>{note.subject}</h1>
@@ -21,7 +20,7 @@ export const NoteDetail: FC<Props> = ({ note, tags }) => {
         <FaCalendarDays />
         <h4>{note.createdOn?.toLocaleDateString()}</h4>
         {tags.length > 0 ? (
-          <div style={{ display: "flex" }}>
+          <div style={{ display: "flex", gap: "8px" }}>
             <FaTag />
             <div className={styles.tags}>
               {tags.map((t) => (
