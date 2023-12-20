@@ -1,7 +1,7 @@
 package main
 
 func Filter[T Note | Tag](collection []T, predicate func(x T) bool) []T {
-	var results []T
+	var results []T = make([]T, 0)
 
 	for _, item := range collection {
 		if predicate(item) {
